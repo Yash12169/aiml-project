@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Recommender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
+        .samples {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .samples h3 {
+            margin-top: 0;
+        }
+        .datalist-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Music Recommendation System</h1>
+        
+        <form method="POST" action="/recommend">
+            <label for="song_name">Enter a song name:</label>
+            <div class="datalist-container">
+                <input type="text" id="song_name" name="song_name" list="song-suggestions" value="{{ song_name }}" required placeholder="Type a song name...">
+                <datalist id="song-suggestions">
+                    {% for song in sample_songs %}
+                        <option value="{{ song }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+            <button type="submit">Get Recommendations</button>
+        </form>
+        
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
+        
+        {% if recommendations %}
+            <h2>Recommendations for "{{ song_name }}"</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Song Name</th>
+                        <th>Artist</th>
+                        <th>Year</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for song in recommendations %}
+                        <tr>
+                            <td>{{ song.name }}</td>
+                            <td>{{ song.artists }}</td>
+                            <td>{{ song.year }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        
+        <div class="samples">
+            <h3>Sample Songs from Dataset</h3>
+            <p>Try one of these songs from the dataset:</p>
+            <ul>
+                {% for song in sample_songs[:5] %}
+                    <li>{{ song }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
